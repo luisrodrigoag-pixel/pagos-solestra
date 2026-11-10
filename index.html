@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solestra · Control de pagos</title>
+<meta name="description" content="Control de pagos de Solestra Consultores">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1E5530">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pagos Solestra">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" href="favicon.ico">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Figtree:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Figtree,system-ui,sans-serif;color:#17211B;background:#F2F5F2;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.caja{width:100%;max-width:440px;text-align:center;padding:36px 28px 28px;border-radius:16px;background:#fff;border:1px solid #DCE3DD;border-top:4px solid #1E5530}
+.logo{width:92px;height:92px;border-radius:22px;border:1px solid #DCE3DD}
+h1{margin-top:18px;font:500 26px/1.15 Fraunces,Georgia,serif;color:#123A20}
+.eye{margin-top:8px;font-size:11px;letter-spacing:.14em;color:#5E6B63;text-transform:uppercase}
+.btn{margin-top:24px;display:inline-block;padding:15px 30px;border:0;border-radius:12px;cursor:pointer;text-decoration:none;background:#1E5530;color:#fff;font:700 16px/1 Figtree,sans-serif}
+.sec{margin-top:12px;background:#E6EFE8;color:#1E5530}
+.pasos{display:none;margin-top:22px;text-align:left;padding:14px 16px;border-radius:12px;background:#F2F5F2;font-size:14px;line-height:1.6;color:#5E6B63}
+.pasos b{color:#17211B}
+.pasos .t{font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#1E5530;margin-bottom:6px}
+.nota{margin-top:20px;font-size:12.5px;color:#8C978F;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="caja">
+  <img class="logo" src="icono-192.png" alt="Solestra Consultores">
+  <h1>Control de pagos</h1>
+  <div class="eye">Solestra Consultores</div>
+  <a class="btn" id="entrar" href="#">Entrar</a><br>
+  <button class="btn sec" id="instalar" style="display:none">Instalar como app</button>
+  <div class="pasos" id="pasosIOS">
+    <div class="t">Instálala en tu iPhone</div>
+    1. En <b>Safari</b>, toca <b>Compartir</b> (el cuadro con flecha hacia arriba).<br>
+    2. Elige <b>Agregar a pantalla de inicio</b>.<br>
+    3. Toca <b>Agregar</b>. Aparecerá el ícono de Solestra.
+  </div>
+  <div class="pasos" id="pasosOtro">
+    <div class="t">Instálala en tu equipo</div>
+    En Chrome: menú <b>⋮</b> y luego <b>Instalar app</b> o <b>Agregar a pantalla principal</b>.
+  </div>
+  <div class="nota">Acceso exclusivo para personal autorizado.<br>Entra con tu cuenta de Solestra.</div>
+</div>
+<script>
+// Dirección de la app (Apps Script)
+var APP = 'https://script.google.com/a/macros/solestraconsultores.mx/s/AKfycbwYusqFlTHT7l_jBU_CcaeESVrp9DGGwbbMzmJk7KoyeQc2P-uTn4QdR1nYGC1MGxGD/exec';
+document.getElementById('entrar').href = APP;
+var standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+if (standalone) { location.replace(APP); }
+else {
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  document.getElementById(ios ? 'pasosIOS' : 'pasosOtro').style.display = 'block';
+  var aviso = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); aviso = e;
+    document.getElementById('instalar').style.display = 'inline-block';
+    document.getElementById('pasosOtro').style.display = 'none';
+  });
+  document.getElementById('instalar').onclick = function () { if (aviso) { aviso.prompt(); aviso = null; this.style.display = 'none'; } };
+}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+</script>
+</body>
+</html>
